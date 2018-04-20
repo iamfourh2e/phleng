@@ -1,0 +1,83 @@
+  <template>
+      <div style="padding: 20px;">
+        <el-row>
+            <el-button @click.native="addArtist">Add Artist</el-button>
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="24">
+              <el-table
+      :data="tableData"
+      style="width: 100%">
+      <el-table-column
+        prop="date"
+        :formatter="dateFormatter"
+        label="Date"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="khName"
+        label="KH Name"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="desc"
+        label="Description">
+      </el-table-column>
+       <el-table-column
+        prop="image_url"
+        label="Image">
+        <template slot-scope="scope">
+          <img :src="scope.row.image_url" class="image">
+          </template>
+      </el-table-column>
+    </el-table>
+            </el-col>
+        </el-row>
+      </div>
+  </template>
+
+  <script>
+import firebase from "../firebaseInit.js";
+import { format } from "date-fns";
+export default {
+  methods: {
+    addArtist() {
+      this.$router.push({ name: "NewArtist" });
+    },
+    dateFormatter(row) {
+      return format(row.date, "DD/MM/YYYY HH:mm");
+    }
+  },
+  data() {
+    return {
+      tableData: []
+    };
+  },
+  created() {
+    firebase.db
+      .collection("artists")
+      .get()
+      .then(snapshot => {
+        let list = [];
+        snapshot.forEach(doc => {
+          list.push(doc.data());
+        });
+        this.tableData = list;
+      })
+      .catch(err => console.log(err.message));
+  }
+};
+</script>
+
+<style scope>
+  .image {
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
+</style>
