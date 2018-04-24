@@ -34,6 +34,11 @@
         <template slot-scope="scope">
           <img :src="scope.row.image_url" class="image">
           </template>
+      </el-table-column>  
+      <el-table-column label="Action" width="75">
+        <template slot-scope="scope">
+          <el-button @click.native="removeArtist(scope.$index, scope.row)" type="warning" size="mini">Remove</el-button>
+        </template>
       </el-table-column>
     </el-table>
             </el-col>
@@ -51,6 +56,32 @@ export default {
     },
     dateFormatter(row) {
       return format(row.date, "DD/MM/YYYY HH:mm");
+    },
+    removeArtist(index, row) {
+      firebase.db
+        .collection("artists")
+        .doc(row.id)
+        .delete()
+        .then(val => {
+          this.$confirm("This will permanently delete. Continue?", "Warning", {
+            confirmButtonText: "OK",
+            cancelButtonText: "Cancel",
+            type: "warning"
+          })
+            .then(() => {
+              this.$message({
+                type: "success",
+                message: "Delete completed"
+              });
+              this.tableData.splice(index, 1);
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "Delete canceled"
+              });
+            });
+        });
     }
   },
   data() {
@@ -65,7 +96,9 @@ export default {
       .then(snapshot => {
         let list = [];
         snapshot.forEach(doc => {
-          list.push(doc.data());
+          let obj = doc.data();
+          obj.id = doc.id;
+          list.push(obj);
         });
         this.tableData = list;
       })
@@ -75,9 +108,9 @@ export default {
 </script>
 
 <style scope>
-  .image {
-    width: 100px;
-    height: 100px;
-    display: block;
-  }
+.image {
+  width: 100px;
+  height: 100px;
+  display: block;
+}
 </style>
