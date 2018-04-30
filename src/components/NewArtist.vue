@@ -34,7 +34,7 @@
     <el-button @click="resetForm('ruleForm')">Reset</el-button>
   </el-form-item>
 </el-form>
-        </el-row>  
+        </el-row>
     </div>
 </template>
 
@@ -85,9 +85,8 @@ export default {
             .collection("artists")
             .add(this.ruleForm)
             .then(snapshot => {
-              console.log(snapshot);
               let storageRef = firebase.storage.ref(
-                this.ruleForm.name + "/images"
+                snapshot.id + "/images"
               );
               vm.fileList.forEach(function(file) {
                 vm.blobToDataURL(file.url, function(dataUrl) {
@@ -121,7 +120,7 @@ export default {
                       firebase.db
                         .collection("artists")
                         .doc(snapshot.id)
-                        .update("image_url", downloadURL)
+                        .update("file_name",file.name,"image_url", downloadURL)
                         .then(snapshot => {
                           console.log("success");
                           vm.ruleForm = {

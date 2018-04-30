@@ -8,6 +8,7 @@ import Home from '@/components/Home'
 import Artist from '@/components/Artist'
 import NewArtist from '@/components/NewArtist'
 import Upload from '@/components/Upload'
+import EditArtist from '@/components/EditArtist'
 
 Vue.use(Router)
 Vue.use(ElementUI, { locale })
@@ -21,12 +22,17 @@ export default new Router({
     {
       path: '/artists',
       name: 'Artist',
-      component: Artist,
+      component: Artist
     },
     {
       path: '/artists/new',
       name: 'NewArtist',
       component: NewArtist
+    },
+    {
+      path: '/artists/:id/edit',
+      name: 'EditArtist',
+      component: EditArtist
     },
     {
       path: '/uploads',

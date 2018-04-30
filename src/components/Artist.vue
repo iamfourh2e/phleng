@@ -35,8 +35,9 @@
           <img :src="scope.row.image_url" class="image">
           </template>
       </el-table-column>  
-      <el-table-column label="Action" width="75">
+      <el-table-column label="Action" width="200" fixed="right">
         <template slot-scope="scope">
+          <el-button @click.native="editArtist(scope.row)" type="primary" size="mini">Edit</el-button>
           <el-button @click.native="removeArtist(scope.$index, scope.row)" type="warning" size="mini">Remove</el-button>
         </template>
       </el-table-column>
@@ -56,6 +57,9 @@ export default {
     },
     dateFormatter(row) {
       return format(row.date, "DD/MM/YYYY HH:mm");
+    },
+    editArtist(row) {
+      this.$router.push({ name: "EditArtist", params: { id: row.id } });
     },
     removeArtist(index, row) {
       firebase.db
